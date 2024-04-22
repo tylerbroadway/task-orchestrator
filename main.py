@@ -1,24 +1,24 @@
-from fastapi import FastAPI
-from models import Task
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from . import models, routes
+from .database import engine, get_db
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# build core route
-# install SQLAlchemy & postgres
-# build models
-# build out CRUD routes
+# build out routes
 # containerize w/ Docker
 # deploy to AWS (EC2?)
 
-# @app.get('/')
-
 @app.get("/")
-def read_root():
+async def read_root():
     return {'message': "Ready to handle your biggest tasks!"}
 
 # get all tasks
 @app.get('/tasks')
-def read_tasks():
+async def read_tasks():
     return
 
 # get task by ID
@@ -26,17 +26,13 @@ def read_tasks():
 def read_task(taskId: int):
     return
 
-# create
-@app.post('/tasks')
-def create_task(task: Task):
-    return
+# create task
+@app.post("/tasks/", response_model=models.Task)
+async def create_task(task: models.Task, db: AsyncSession = Depends(get_db)):
+    await routes.create_task(db, task=task)
+    return {'message': 'Task created'}
 
-# update
-@app.patch('/tasks/{taskId}')
-def update_task(taskId: int):
-    return
-
-# delete
+# delete task
 @app.delete('/tasks/{taskId}')
-def delete_task(taskId: int):
+async def delete_task(taskId: int):
     return
