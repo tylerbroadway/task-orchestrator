@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class TaskInterface(BaseModel):
     id: int
@@ -7,4 +8,4 @@ class TaskInterface(BaseModel):
     description: str
     is_complete: bool
     date_created: datetime
-    date_completed: None | datetime
+    date_completed: Optional[datetime]

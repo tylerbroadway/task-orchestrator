@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from . import models, routes
-from .database import engine, get_db
+from database import engine, get_db
+from operations import create_task
+from schema import Task
 
-models.Base.metadata.create_all(bind=engine)
+Task.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -27,9 +28,9 @@ def read_task(taskId: int):
     return
 
 # create task
-@app.post("/tasks/", response_model=models.Task)
-async def create_task(task: models.Task, db: AsyncSession = Depends(get_db)):
-    await routes.create_task(db, task=task)
+@app.post("/tasks/", response_model=Task)
+async def create_task(task: Task, db: AsyncSession = Depends(get_db)):
+    await create_task(db, task=task)
     return {'message': 'Task created'}
 
 # delete task

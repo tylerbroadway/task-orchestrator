@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.future import select
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 Base = declarative_base()
